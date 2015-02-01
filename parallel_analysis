@@ -1,0 +1,47 @@
+####################Data Preparation####################
+#   Cleaning data for statistical computation
+husband<-subset(spouse_data,spouse_data$V5=="Husband")
+wife<-subset(spouse_data,spouse_data$V5=="Wife")
+
+#   Calculating sample means for all survey questions
+hmeans<-sapply(husband[1:4],FUN = mean)
+wmeans<-sapply(wife[1:4],FUN = mean)
+
+alpha=0.05
+
+#   Converting a data frame to a matrix
+x<-subset(spouse_data[1:4]) 	#data frame's subset
+x<-as.matrix(x)			#converted to matrix
+
+####################Estimated profile####################
+
+#   plot the columns of one matrix agaist the columns of another
+matplot(1:4,cbind(hmeans,wmeans),
+		type="both",lty=1,lwd=3,
+		cex=2:2,xlab="Question 1-4",
+		ylab="Ratings")
+
+####################Paralell profile####################
+#   hypothesis: mu[1,i]-mu[1,i-1]=mu[2,i]-mu[2,i-1]
+
+C1<-rbind(c(-1,1,0,0),c(0,-1,1,0),c(0,0,-1,1))
+d <- hmeans-wmeans
+
+#   computing within sampale covariance matrices
+h_s<-cov(husband[1:4])
+w_s<-cov(wife[1:4])
+
+#   computing pooled variance between 2 independent samples
+pooled_S1<-((30-1)*h_s+(30-1)*w_s)/(30+30-2)
+inv<-solve((1/30+1/30) * C1 %*% pooled_S1 %*% t(C1))
+
+#   computing T-squared statistics 
+T_sqr1<- t(d) %*% t(C1) %*% inv %*% C1 %*% d
+
+#   comparing to critical value for p-value
+coef<-(30+30-4)/((30+30-2)*(4-1))
+pval<-pf(coef*T_sqr1,4-1,30+30-4,lower.tail=0)
+
+####################Conclusion####################
+#   Failed to reject at alpha=0.05 level
+#   The profiles are paralell
