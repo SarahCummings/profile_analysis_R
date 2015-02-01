@@ -1,0 +1,12 @@
+####################Coincident profile##################
+
+#   hypothesis: mu[1,i]=mu[2,i]
+#   if each mu equal one another, then the sums are equal too
+hsum<-rowSums(husband[1:4])
+wsum<-rowSums(wife[1:4])
+
+#   two sample t-test
+t.test(hsum,wsum)
+
+#   failed to reject null hypothesis and conclude that
+#   the husband and wife profiles are coincident
