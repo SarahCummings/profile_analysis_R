@@ -1,0 +1,20 @@
+#####################Level Profile#######################
+
+#   hypothesis: mu[1,1=...=mu[1,p]=mu[2,1]=...=mu[2,p]
+allmeans<-colMeans(x)
+
+#   Calculating Overall variance 
+S<-cov(spouse_data[1:4])
+
+#   Calculating T-squared statistics
+T_sqr2<- t(allmeans) %*% t(C1) %*% solve((1/60)*C1 %*% S %*% t(C1)) %*% C1 %*% allmeans
+
+#   Yielding T_sqr2 = 24.82071
+coef2 <-(30+30-4+1)/((4-1)*(30+30-1))
+
+#   Retrieving critical p-value
+pval2 <- pf(coef2*T_sqr2,4-1,30+30-4+1,lower.tail=0)
+
+# Yielding p-value = 0.0001554491
+# We reject the hypothesis and conclude that the profiles are not leveled
+
